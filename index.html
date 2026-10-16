@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TaskFlow - Organize tasks and stay focused.">
+    <title>TaskFlow — Plan Smarter, Focus Better</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+<div class="app-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <a href="#dashboard" class="brand">
+            <div class="brand-icon">
+                <span>T</span>
+                <svg viewBox="0 0 32 32">
+                    <path d="M4 16 L12 24 L28 6"></path>
+                </svg>
+            </div>
+            <span class="brand-name">TaskFlow<span>.</span></span>
+        </a>
+
+        <p class="sidebar-label">WORKSPACE</p>
+
+        <nav class="sidebar-nav">
+            <a href="#dashboard" class="nav-link active" data-view="dashboard">
+                <span class="nav-icon">▦</span> Dashboard
+            </a>
+            <a href="#tasks" class="nav-link" data-view="all">
+                <span class="nav-icon">☑</span> All Tasks
+            </a>
+            <a href="#tasks" class="nav-link" data-view="today">
+                <span class="nav-icon">◷</span> Today
+            </a>
+            <a href="#tasks" class="nav-link" data-view="upcoming">
+                <span class="nav-icon">□</span> Upcoming
+            </a>
+            <a href="#tasks" class="nav-link" data-view="completed">
+                <span class="nav-icon">✓</span> Completed
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="focus-card">
+                <div class="focus-icon">◎</div>
+                <h3>Stay Focused</h3>
+                <p>One task at a time. Make every minute count.</p>
+                <button id="sidebarFocusBtn" class="focus-btn" type="button">
+                    Enter Focus Mode ↗
+                </button>
+            </div>
+
+            <div class="profile">
+                <div class="profile-avatar">A</div>
+
+                <div class="profile-info">
+                    <h4>My Workspace</h4>
+                    <p>Personal Account</p>
+                </div>
+
+                <button id="profileMenuBtn" class="profile-menu" type="button"
+                    aria-label="Workspace menu" aria-expanded="false">
+                    •••
+                </button>
+
+                <div class="profile-dropdown" id="profileDropdown" hidden>
+                    <p class="profile-dropdown-heading">My Workspace</p>
+                    <p class="profile-dropdown-description">Manage your productivity.</p>
+                    <button id="themeMenuBtn" type="button">Toggle appearance</button>
+                    <button id="clearCompletedBtn" type="button">Clear completed tasks</button>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content" id="dashboard">
+
+        <!-- No breadcrumb here -->
+        <header class="topbar">
+            <div class="topbar-spacer"></div>
+
+            <div class="topbar-right">
+                <span id="currentDate" class="date-display"></span>
+                <button id="themeBtn" class="icon-btn" type="button"
+                    aria-label="Toggle appearance" title="Toggle appearance">
+                    ☾
+                </button>
+            </div>
+        </header>
+
+        <!-- WELCOME -->
+        <section class="welcome-section">
+            <div>
+                <p class="greeting">YOUR PRODUCTIVITY SPACE</p>
+                <h1>Let's get things <span>done.</span></h1>
+                <p class="welcome-description">
+                    Organize your day, focus on what matters, and make progress one task at a time.
+                </p>
+            </div>
+
+            <button id="addTaskBtn" class="primary-btn" type="button">
+                <span>+</span> Add New Task
+            </button>
+        </section>
+
+        <!-- ADD / EDIT TASK FORM -->
+        <section class="task-form-section" id="taskFormSection" hidden>
+            <div class="section-header">
+                <div>
+                    <p class="section-eyebrow">TASK MANAGEMENT</p>
+                    <h2 id="taskFormHeading">Create a new task</h2>
+                </div>
+
+                <button id="closeTaskFormBtn" class="icon-btn" type="button"
+                    aria-label="Close form">×</button>
+            </div>
+
+            <form id="taskForm">
+                <input type="hidden" id="editingTaskId">
+
+                <div class="form-group">
+                    <label for="taskTitle">Task title</label>
+                    <input id="taskTitle" name="title" type="text"
+                        placeholder="What do you need to do?"
+                        maxlength="150" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="taskCategory">Category</label>
+                        <select id="taskCategory" name="category">
+                            <option value="Study">Study</option>
+                            <option value="Work">Work</option>
+                            <option value="Personal">Personal</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="taskPriority">Priority</label>
+                        <select id="taskPriority" name="priority">
+                            <option value="High">High</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="taskDueDate">Due date</label>
+                        <input id="taskDueDate" name="dueDate" type="date">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button id="cancelTaskBtn" class="secondary-btn" type="button">
+                        Cancel
+                    </button>
+                    <button id="saveTaskBtn" class="primary-btn" type="submit">
+                        Save Task
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- STATISTICS -->
+        <section class="stats-grid">
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span>Total Tasks</span>
+                    <span class="stat-icon purple">▦</span>
+                </div>
+                <h2 id="totalTasks">0</h2>
+                <p>Tasks in your workspace</p>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span>Pending</span>
+                    <span class="stat-icon orange">◷</span>
+                </div>
+                <h2 id="pendingTasks">0</h2>
+                <p>Tasks left to complete</p>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span>Completed</span>
+                    <span class="stat-icon green">✓</span>
+                </div>
+                <h2 id="completedTasks">0</h2>
+                <p>Tasks finished</p>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-top">
+                    <span>Completion</span>
+                    <span class="stat-icon purple">↗</span>
+                </div>
+                <h2 id="progressPercent">0%</h2>
+                <div class="progress-track" id="progressTrack"
+                    role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                    aria-valuenow="0">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p>Keep moving forward</p>
+            </article>
+        </section>
+
+        <!-- TASKS -->
+        <section class="tasks-section" id="tasks">
+            <div class="section-header">
+                <div>
+                    <p class="section-eyebrow">YOUR WORKSPACE</p>
+                    <h2 id="tasksHeading">My Tasks</h2>
+                </div>
+
+                <button id="viewAllBtn" class="text-btn" type="button">
+                    View All →
+                </button>
+            </div>
+
+            <div class="task-toolbar">
+                <div class="search-box">
+                    <span>⌕</span>
+                    <input id="searchInput" type="search"
+                        placeholder="Search your tasks..." aria-label="Search tasks">
+                </div>
+
+                <select id="categoryFilter" aria-label="Filter by category">
+                    <option value="all">All Categories</option>
+                    <option value="Study">Study</option>
+                    <option value="Work">Work</option>
+                    <option value="Personal">Personal</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <select id="statusFilter" aria-label="Filter by status">
+                    <option value="all">All Tasks</option>
+                    <option value="pending">Pending</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </div>
+
+            <div class="task-list" id="taskList" aria-live="polite"></div>
+
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon">✓</div>
+                <h3 id="emptyStateTitle">Your workspace is ready!</h3>
+                <p id="emptyStateDescription">
+                    Add your first task and start making progress towards your goals.
+                </p>
+                <button id="emptyAddTaskBtn" class="primary-btn" type="button">
+                    + Create Your First Task
+                </button>
+            </div>
+        </section>
+
+        <!-- BOTTOM CARDS -->
+        <section class="bottom-grid">
+            <article class="dashboard-card daily-goal">
+                <div class="bottom-card-heading">
+                    <div>
+                        <p class="section-eyebrow">STAY CONSISTENT</p>
+                        <h3>Daily Goal</h3>
+                    </div>
+                    <div class="goal-icon">✦</div>
+                </div>
+
+                <p class="goal-description">
+                    Small steps every day lead to big results.
+                </p>
+
+                <div class="goal-progress-info">
+                    <span>Tasks completed today</span>
+                    <strong id="dailyGoalCount">0 / 5</strong>
+                </div>
+
+                <div class="goal-progress-track" id="dailyGoalTrack"
+                    role="progressbar" aria-valuemin="0" aria-valuemax="5"
+                    aria-valuenow="0">
+                    <div id="dailyGoalFill" class="goal-progress-fill"></div>
+                </div>
+            </article>
+
+            <article class="dashboard-card focus-session">
+                <div class="bottom-card-heading">
+                    <div>
+                        <p class="section-eyebrow">DEEP WORK</p>
+                        <h3>Focus Session</h3>
+                    </div>
+                    <div class="focus-preview-icon">◎</div>
+                </div>
+
+                <div id="timerPreview" class="timer-preview">25:00</div>
+                <p class="focus-session-description">
+                    Give one task your full attention.
+                </p>
+
+                <button id="startFocusBtn" class="secondary-btn" type="button">
+                    Start Focusing →
+                </button>
+            </article>
+        </section>
+
+        <!-- FOCUS TIMER MODAL -->
+        <section id="focusModal" class="focus-modal"
+            role="dialog" aria-modal="true" aria-labelledby="focusModalTitle" hidden>
+
+            <div class="focus-modal-content">
+                <button id="closeFocusBtn" class="focus-close-btn"
+                    type="button" aria-label="Close focus session">×</button>
+
+                <div class="focus-modal-icon">◎</div>
+                <p class="focus-label">FOCUS MODE</p>
+                <h2 id="focusModalTitle">Time to focus.</h2>
+
+                <p class="focus-description">
+                    Silence the distractions. Focus on one thing.
+                </p>
+
+                <div id="focusTimer" class="focus-timer">25:00</div>
+
+                <div id="focusStatus" class="focus-session-status">
+                    <span class="focus-status-dot"></span>
+                    <span id="focusStatusText">Ready when you are</span>
+                </div>
+
+                <div class="focus-controls">
+                    <button id="resetFocusBtn" class="focus-reset-btn" type="button">
+                        ↺ Reset
+                    </button>
+                    <button id="toggleFocusBtn" class="focus-start-btn" type="button">
+                        ▶ Start Session
+                    </button>
+                </div>
+
+                <button id="focusBreakBtn" class="focus-break-btn" type="button">
+                    Switch to a 5-minute break
+                </button>
+
+                <p class="focus-tip">
+                    Small steps. Consistent effort. Better results.
+                </p>
+            </div>
+        </section>
+
+        <!-- Footer without the unwanted build text -->
+        <footer class="footer">
+            <p>TaskFlow · Plan smarter. Focus better.</p>
+        </footer>
+
+    </main>
+</div>
+</body>
+</html>
